@@ -14,5 +14,13 @@ app.use(express.static('public')) // a middleware used for accessing all the dat
 app.use(cookieParser())
 
 
+// importing the routes
+import userRouter from './routes/user.routes.js'
+
+
+
+// declaring the routes. Basically this is our API.
+app.use("/api/v1/users", userRouter) // it looks something like this- http://localhost:8000/api/v1/users/register
+
 
 export { app }
