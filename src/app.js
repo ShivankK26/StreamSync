@@ -1,6 +1,8 @@
 import express from 'express'
 import cors from 'cors'
 import cookieParser from 'cookie-parser' // used to perform CRUD operations in the cookies of user's browser
+import bodyParser from 'body-parser'
+
 
 const app = express()
 app.use(cors({
@@ -11,6 +13,7 @@ app.use(cors({
 app.use(express.json({ limit: "16kb" })) // it controls the limit of the json data being received so that the server doesn't crash
 app.use(express.urlencoded({ extended: true, limit: "16kb" })) // it basically reads the entire url of a webpage even if there is any other sign like % between two characters.
 app.use(express.static('public')) // a middleware used for accessing all the data in public folder
+app.use(bodyParser.json())
 app.use(cookieParser())
 
 
