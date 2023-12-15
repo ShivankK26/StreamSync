@@ -6,6 +6,7 @@ import { uploadOnCloudinary } from '../utils/cloudinary.js'
 
 
 const registerUser = asyncHandler( async(req, res) => {
+
     // res.status(200).json({
     //     message: "ok"
     // })
@@ -20,17 +21,20 @@ const registerUser = asyncHandler( async(req, res) => {
     // remove the password and refresh token field from the response
     // check for the user creation
     // return the result
-
+   
 
     // Now, extracting the information from the models
-    const { username, email, fullname, password } = req.body; // req.body helps in retreiving the information 
-    console.log("email: ", email);
+
+
+    try {
+        const { username, email, fullname, password } = req.body; // req.body helps in retreiving the information 
+        // console.log("email: ", email);
 
     if ([fullname, email, username, password].some((field) => field?.trim() === "")){
         throw new ApiError(400, "fullname is required")
     }
 
-    const existedUser = User.findOne({
+    const existedUser = await User.findOne({
         $or: [{ username }, { email }]
     })
 
@@ -39,9 +43,17 @@ const registerUser = asyncHandler( async(req, res) => {
     }
 
     // checking for the files uploaded by the user
+    // console.log("req.files:", req.files);
+    console.log(req.files);
     const avatarLocalPath = req.files?.avatar[0]?.path; // it basically points to the local path of the avatar image, which is in server and hasn't been uploaded to cloudinary.
+    // console.log("avatarLocalPath:", avatarLocalPath);
 
-    const coverImageLocalPath = req.files?.coverImage[0]?.path; // it basically points to the local path of the cover image, which is in server and hasn't been uploaded to cloudinary.
+    let coverImageLocalPath;
+    if (req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length > 0) {
+        coverImageLocalPath = req.files.coverImage[0].path
+    }
+
+    // const coverImageLocalPath = req.files?.coverImage[0]?.path; // it basically points to the local path of the cover image, which is in server and hasn't been uploaded to cloudinary.
 
     if (!avatarLocalPath) {
         throw new ApiError(400, "Avatar file is required.")
@@ -78,7 +90,18 @@ const registerUser = asyncHandler( async(req, res) => {
     return res.status(201).json(
         new ApiResponse(200, createdUser, "User registered successfully")
     )
+
+    } catch (error) {
+        console.error(error);
+        return res.status(error.statusCode || 500).json({
+            error: {
+                message: error.message || "Internal Server Error",
+            },
+        });
+    }
+    
+    
 })
 
 
-export default { registerUser }
+export default registerUser 
