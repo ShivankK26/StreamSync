@@ -28,7 +28,7 @@ To get the project up and running on your local machine, follow these steps:
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/your-username/StreamSync.git
+   git clone https://github.com/ShivankK26/StreamSync.git
    ```
 
 2. Install dependencies for the server:
